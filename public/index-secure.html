@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ngân Hàng An Toàn - Phiên Bản Vá Lỗi</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #00b894 0%, #0984e3 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00b894 0%, #0984e3 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .success-banner {
+            background: #51cf66;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 3px solid #2f9e44;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            border-left: 4px solid #00b894;
+            padding-left: 20px;
+        }
+
+        .section h2 {
+            color: #00b894;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .section p {
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            font-family: monospace;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #00b894;
+            box-shadow: 0 0 5px rgba(0, 184, 148, 0.3);
+        }
+
+        button {
+            background: #00b894;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.3s;
+            margin-right: 10px;
+        }
+
+        button:hover {
+            background: #0984e3;
+        }
+
+        button.secondary {
+            background: #868e96;
+        }
+
+        button.secondary:hover {
+            background: #495057;
+        }
+
+        .code-box {
+            background: #f4f4f4;
+            border-left: 3px solid #00b894;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+        }
+
+        .fix-box {
+            background: #e7f5ff;
+            border: 2px solid #0984e3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .fix-box h4 {
+            color: #0984e3;
+            margin-bottom: 10px;
+        }
+
+        .result-box {
+            background: #e7f5ff;
+            border: 1px solid #0984e3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .result-box.show {
+            display: block;
+        }
+
+        .result-box.success {
+            background: #d3f9d8;
+            border-color: #51cf66;
+        }
+
+        .result-box.blocked {
+            background: #fff3bf;
+            border-color: #fcc419;
+        }
+
+        .demo-tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .demo-tab {
+            padding: 12px 20px;
+            background: #f4f4f4;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .demo-tab.active {
+            background: white;
+            color: #00b894;
+            border-bottom-color: #00b894;
+        }
+
+        .demo-content {
+            display: none;
+        }
+
+        .demo-content.active {
+            display: block;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .comparison-item {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .comparison-item.vulnerable {
+            border: 2px solid #ff6b6b;
+        }
+
+        .comparison-item.secure {
+            border: 2px solid #51cf66;
+        }
+
+        .comparison-header {
+            padding: 10px;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .comparison-item.vulnerable .comparison-header {
+            background: #ff6b6b;
+        }
+
+        .comparison-item.secure .comparison-header {
+            background: #51cf66;
+        }
+
+        .comparison-content {
+            padding: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .patch-summary {
+            background: #d3f9d8;
+            border-left: 4px solid #51cf66;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+
+        .patch-summary h3 {
+            color: #2f9e44;
+            margin-bottom: 10px;
+        }
+
+        .patch-summary ul {
+            margin-left: 20px;
+            color: #333;
+        }
+
+        .patch-summary li {
+            margin-bottom: 8px;
+        }
+
+        .success-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            background: #51cf66;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔒 Ngân Hàng An Toàn - Phiên Bản Vá Lỗi</h1>
+            <p>Trình diễn cách sửa các lỗ hổng SQL Injection và XSS</p>
+        </div>
+
+        <div class="success-banner">
+            ✅ Phiên bản này đã được vá lỗi chống lại các tấn công SQL Injection và XSS
+        </div>
+
+        <div class="content">
+            <!-- Điều Hướng Tab -->
+            <div class="demo-tabs">
+                <button class="demo-tab active" onclick="switchTab('patch-a')">Phần A: Sửa SQL Injection</button>
+                <button class="demo-tab" onclick="switchTab('patch-b')">Phần B: Sửa 3 Loại XSS</button>
+                <button class="demo-tab" onclick="switchTab('comparison')">So Sánh Theo Cạnh</button>
+            </div>
+
+            <!-- PHẦN A: SỬA SQL INJECTION -->
+            <div id="patch-a" class="demo-content active">
+                <div class="section">
+                    <h2>🔧 Phần A: Sửa SQL Injection</h2>
+
+                    <div class="fix-box">
+                        <h4>✅ Giải Pháp: Sử Dụng Truy Vấn Được Tham Số Hóa</h4>
+                        <p>Thay vì nối chuỗi, hãy sử dụng chỗ dùng tham số giúp tách đầu vào người dùng khỏi mã SQL.</p>
+                    </div>
+
+                    <h3 style="color: #0984e3; margin-top: 20px;">Giải Pháp Giải Thích:</h3>
+
+                    <p><strong>MÃ LỖ HỔNG:</strong></p>
+                    <div class="code-box" style="border-left-color: #ff6b6b;">
+// ❌ LỖ HỔNG - Nối chuỗi
+const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+db.get(query, (err, row) => { ... });
+                    </div>
+
+                    <p><strong>MÃ AN TOÀN:</strong></p>
+                    <div class="code-box" style="border-left-color: #51cf66;">
+// ✅ AN TOÀN - Truy vấn được tham số hóa
+const query = `SELECT * FROM users WHERE username = ? AND password = ?`;
+db.get(query, [username, password], (err, row) => { ... });
+                    </div>
+
+                    <div class="fix-box">
+                        <h4>Tại Sao Nó Hoạt Động:</h4>
+                        <ul style="margin-left: 20px; color: #333;">
+                            <li><strong>Tách Mã Và Dữ Liệu:</strong> Chỗ dùng ? được thay thế bằng trình điều khiển cơ sở dữ liệu, không phải bằng nối chuỗi</li>
+                            <li><strong>Được Coi Là Dữ Liệu:</strong> Đầu vào người dùng luôn được coi là giá trị dữ liệu, không bao giờ là mã SQL có thể thực thi</li>
+                            <li><strong>SQL Injection Không Thể:</strong> Ngay cả khi bạn nhập <code style="background: #f0f0f0; padding: 2px 4px;"> ' OR '1'='1</code>, nó được coi là chuỗi ký tự theo nghĩa đen để tìm kiếm</li>
+                        </ul>
+                    </div>
+
+                    <h3 style="color: #0984e3; margin-top: 20px;">Thử Tấn Công Trên Phiên Bản An Toàn:</h3>
+
+                    <div class="form-group">
+                        <label for="secure-username">Tên Người Dùng:</label>
+                        <input type="text" id="secure-username" placeholder="Thử: ' OR '1'='1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="secure-password">Mật Khẩu:</label>
+                        <input type="password" id="secure-password" placeholder="Mật khẩu bất kỳ">
+                    </div>
+
+                    <button onclick="trySQLInjectionOnSecure()">Thử Tấn Công SQL Injection</button>
+                    <button class="secondary" onclick="clearSecureResults()">Xóa</button>
+
+                    <div id="secure-result" class="result-box"></div>
+
+                    <div class="patch-summary" style="margin-top: 30px;">
+                        <h3>📚 Ghi Chú Bảo Mật Bổ Sung:</h3>
+                        <ul>
+                            <li><strong>Tất Cả Truy Vấn Cơ Sở Dữ Liệu:</strong> Sử dụng truy vấn được tham số hóa cho mọi hoạt động cơ sở dữ liệu (SELECT, INSERT, UPDATE, DELETE)</li>
+                            <li><strong>ORMs:</strong> Hầu hết các ORMs (Sequelize, TypeORM) sử dụng các truy vấn được tham số hóa theo mặc định</li>
+                            <li><strong>Các Tuyên Bố Được Chuẩn Bị:</strong> Hoạt động tương tự trên tất cả các cơ sở dữ liệu chính (MySQL, PostgreSQL, SQL Server)</li>
+                            <li><strong>Đào Tạo Nhà Phát Triển:</strong> Đây là phòng ngừa quan trọng nhất chống lại SQL injection</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PHẦN B: SỬA XSS -->
+            <div id="patch-b" class="demo-content">
+                <div class="section">
+                    <h2>🔧 Phần B: Sửa Cross-Site Scripting (XSS)</h2>
+
+                    <div class="fix-box">
+                        <h4>✅ Giải Pháp: Vệ Sinh HTML + Cookie HttpOnly</h4>
+                        <p>Hai cách tiếp cận bổ sung để ngăn chặn các tấn công XSS.</p>
+                    </div>
+
+                    <h3 style="color: #0984e3; margin-top: 20px;">Giải Pháp 1: Vệ Sinh HTML</h3>
+
+                    <p><strong>MÃ LỖ HỔNG:</strong></p>
+                    <div class="code-box" style="border-left-color: #ff6b6b;">
+// ❌ LỖ HỔNG - HTML thô từ đầu vào người dùng
+const notification = `
+    &lt;div&gt;Tin Nhắn: ${message}&lt;/div&gt;
+`;
+res.json({ html: notification });
+                    </div>
+
+                    <p><strong>MÃ AN TOÀN:</strong></p>
+                    <div class="code-box" style="border-left-color: #51cf66;">
+// ✅ AN TOÀN - Thoát các ký tự HTML đặc biệt
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '&lt;': '&lt;',     // < trở thành &lt;
+        '&gt;': '&gt;',     // > trở thành &gt;
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&lt;&gt;"']/g, m => map[m]);
+}
+
+const escapedMessage = escapeHtml(message);
+const notification = `&lt;div&gt;Tin Nhắn: ${escapedMessage}&lt;/div&gt;`;
+                    </div>
+
+                    <h3 style="color: #0984e3; margin-top: 20px;">Vệ Sinh HTML Làm Gì:</h3>
+                    <div class="comparison">
+                        <div class="comparison-item vulnerable">
+                            <div class="comparison-header">❌ Mà Không Vệ Sinh</div>
+                            <div class="comparison-content">
+Đầu Vào: <code>&lt;img src=x onerror="alert('XSS')"&gt;</code>
+
+HTML Đầu Ra:
+<code>&lt;img src=x onerror="alert('XSS')"&gt;</code>
+
+Kết Quả: Trình duyệt hiển thị thẻ và thực thi JavaScript!
+                            </div>
+                        </div>
+                        <div class="comparison-item secure">
+                            <div class="comparison-header">✅ Với Vệ Sinh</div>
+                            <div class="comparison-content">
+Đầu Vào: <code>&lt;img src=x onerror="alert('XSS')"&gt;</code>
+
+HTML Đầu Ra:
+<code>&amp;lt;img src=x onerror=&quot;alert('XSS')&quot;&amp;gt;</code>
+
+Kết Quả: Trình duyệt hiển thị nó dưới dạng văn bản, không phải HTML!
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #0984e3; margin-top: 20px;">Giải Pháp 2: Cookie HttpOnly</h3>
+
+                    <p><strong>COOKIE LỖ HỔNG (có thể bị đánh cắp bởi XSS):</strong></p>
+                    <div class="code-box" style="border-left-color: #ff6b6b;">
+// ❌ LỖ HỔNG - JavaScript có thể truy cập cookie này
+res.cookie('session_user', username, { 
+    httpOnly: false  // JavaScript trình duyệt có thể đọc điều này!
+});
+
+// Kẻ tấn công có thể đánh cắp nó bằng: document.cookie
+                    </div>
+
+                    <p><strong>COOKIE AN TOÀN (được bảo vệ khỏi XSS):</strong></p>
+                    <div class="code-box" style="border-left-color: #51cf66;">
+// ✅ AN TOÀN - JavaScript không thể truy cập cookie này
+res.cookie('session_user', username, { 
+    httpOnly: true,      // Chỉ được gửi qua HTTP, không thể truy cập thông qua JavaScript
+    secure: true,        // Chỉ được gửi qua HTTPS
+    sameSite: 'strict'   // Không thể được gửi trong các yêu cầu qua site
+});
+
+// Ngay cả khi kẻ tấn công chèn JavaScript, nó cũng không thể đọc document.cookie!
+                    </div>
+
+                    <h3 style="color: #0984e3; margin-top: 20px;">Thử Tấn Công Trên Phiên Bản An Toàn:</h3>
+
+                    <p>Đặt cookie phiên an toàn trước:</p>
+                    <button onclick="setSampleSecureCookie()">🔑 Đặt Cookie Phiên An Toàn</button>
+                    <div id="secure-cookie-status" style="margin-top: 10px;"></div>
+
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label for="secure-xss-message">Payload XSS:</label>
+                        <textarea id="secure-xss-message" rows="4" placeholder="Thử: <img src=x onerror=\"alert('XSS')\">"></textarea>
+                    </div>
+
+                    <button onclick="tryXSSOnSecure()">Thử Tấn Công XSS</button>
+                    <button class="secondary" onclick="clearSecureXSSResults()">Xóa</button>
+
+                    <div id="secure-xss-result" class="result-box"></div>
+
+                    <h3 style="color: #0984e3; margin-top: 40px;">3 Loại XSS & Cách Sửa</h3>
+                    
+                    <div class="patch-summary">
+                        <h4>1. Reflected XSS</h4>
+                        <p><strong>Lỗ Hổng:</strong> Phản ánh đầu vào người dùng trực tiếp vào HTML</p>
+                        <p><strong>Sửa:</strong> Thoát HTML tất cả dữ liệu trước khi hiển thị</p>
+
+                        <h4 style="margin-top: 15px;">2. Stored XSS (Nguy Hiểm Nhất!)</h4>
+                        <p><strong>Lỗ Hổng:</strong> Lưu payload vào database, tấn công tất cả người xem</p>
+                        <p><strong>Sửa:</strong> Thoát HTML cả khi lưu lẫn khi lấy từ database</p>
+
+                        <h4 style="margin-top: 15px;">3. DOM-based XSS</h4>
+                        <p><strong>Lỗ Hổng:</strong> JavaScript sử dụng innerHTML với dữ liệu chưa xử lý</p>
+                        <p><strong>Sửa:</strong> Sử dụng textContent thay vì innerHTML</p>
+                    </div>
+
+                    <h3 style="color: #0984e3; margin-top: 40px;">Demo: Stored XSS An Toàn</h3>
+                    
+                    <div class="form-group">
+                        <label for="secure-comment-author">Tên Tác Giả:</label>
+                        <input type="text" id="secure-comment-author" placeholder="Nhập tên">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="secure-comment-content">Nội Dung (Thử payload):</label>
+                        <textarea id="secure-comment-content" rows="4" placeholder="Thử: <img src=x onerror='alert()'>"></textarea>
+                    </div>
+
+                    <button onclick="submitSecureStoredXSS()">📤 Lưu Bình Luận An Toàn</button>
+                    <button onclick="loadSecureComments()">📥 Tải Danh Sách</button>
+
+                    <div id="secure-comments-result" class="result-box" style="margin-top: 15px;"></div>
+
+                    <h3 style="color: #0984e3; margin-top: 40px;">Demo: DOM-based XSS An Toàn</h3>
+
+                    <div class="form-group">
+                        <label for="secure-dom-input">Dữ Liệu (Thử payload):</label>
+                        <input type="text" id="secure-dom-input" placeholder="Thử: <img src=x onerror='alert()'>">
+                    </div>
+
+                    <button onclick="triggerSecureDOMXSS()">✅ Render An Toàn (textContent)</button>
+
+                    <div id="secure-dom-result" class="result-box" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+
+            <!-- TAB SO SÁNH -->
+            <div id="comparison" class="demo-content">
+                <div class="section">
+                    <h2>📊 So Sánh Theo Cạnh</h2>
+
+                    <h3 style="color: #0984e3; margin-top: 20px; margin-bottom: 15px;">Bảo Vệ SQL Injection</h3>
+                    <div class="comparison">
+                        <div class="comparison-item vulnerable">
+                            <div class="comparison-header">❌ Cách Tiếp Cận Có Lỗ Hổng</div>
+                            <div class="comparison-content">
+<strong>Nối Chuỗi:</strong>
+<code>
+query = "SELECT * FROM users WHERE username = '" + username + "'"
+</code>
+
+Tấn Công:
+<code>
+username = "' OR '1'='1"
+</code>
+
+Truy Vấn Kết Quả:
+<code>
+SELECT * FROM users WHERE username = '' OR '1'='1'
+</code>
+
+Kết Quả: Trả về tất cả users!
+                            </div>
+                        </div>
+                        <div class="comparison-item secure">
+                            <div class="comparison-header">✅ Cách Tiếp Cận An Toàn</div>
+                            <div class="comparison-content">
+<strong>Truy Vấn Được Tham Số Hóa:</strong>
+<code>
+query = "SELECT * FROM users WHERE username = ?"
+db.get(query, [username])
+</code>
+
+Tấn Công (cùng đầu vào):
+<code>
+username = "' OR '1'='1"
+</code>
+
+Hành Vi:
+Tìm kiếm kết quả chính xác của chuỗi "' OR '1'='1"
+
+Kết Quả: Không tìm thấy users (như dự định)
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #0984e3; margin-top: 40px; margin-bottom: 15px;">Bảo Vệ XSS</h3>
+                    <div class="comparison">
+                        <div class="comparison-item vulnerable">
+                            <div class="comparison-header">❌ Cách Tiếp Cận Có Lỗ Hổng</div>
+                            <div class="comparison-content">
+<strong>Đầu Ra Trực Tiếp:</strong>
+<code>
+output = &lt;div&gt;${userInput}&lt;/div&gt;
+</code>
+
+Tấn Công:
+<code>
+userInput = &lt;img src=x onerror="alert('XSS')"&gt;
+</code>
+
+HTML Được Hiển Thị:
+<code>
+&lt;div&gt;&lt;img src=x onerror="alert('XSS')"&gt;&lt;/div&gt;
+</code>
+
+Kết Quả: JavaScript thực thi!
+                            </div>
+                        </div>
+                        <div class="comparison-item secure">
+                            <div class="comparison-header">✅ Cách Tiếp Cận An Toàn</div>
+                            <div class="comparison-content">
+<strong>Đầu Ra Được Thoát HTML:</strong>
+<code>
+output = &lt;div&gt;${escapeHtml(userInput)}&lt;/div&gt;
+</code>
+
+Tấn Công (cùng đầu vào):
+<code>
+userInput = &lt;img src=x onerror="alert('XSS')"&gt;
+</code>
+
+HTML Được Hiển Thị:
+<code>
+&amp;lt;img src=x onerror=&quot;alert('XSS')&quot;&amp;gt;
+</code>
+
+Kết Quả: Hiển thị dưới dạng văn bản, không được thực thi!
+                            </div>
+                        </div>
+                    </div>
+
+                    <h3 style="color: #0984e3; margin-top: 40px;">🛡️ Danh Sách Kiểm Tra Bảo Mật Hoàn Chỉnh</h3>
+                    <div class="patch-summary">
+                        <ul style="list-style: none;">
+                            <li style="margin-bottom: 12px;">
+                                <span class="success-icon">✓</span>
+                                <strong>Tất Cả Truy Vấn Cơ Sở Dữ Liệu:</strong> Sử dụng các truy vấn được tham số hóa (các tuyên bố được chuẩn bị)
+                            </li>
+                            <li style="margin-bottom: 12px;">
+                                <span class="success-icon">✓</span>
+                                <strong>Đầu Ra Đầu Vào Người Dùng:</strong> Thoát HTML tất cả dữ liệu được điều khiển bởi người dùng trước khi hiển thị
+                            </li>
+                            <li style="margin-bottom: 12px;">
+                                <span class="success-icon">✓</span>
+                                <strong>Cookie:</strong> Đặt các cờ HttpOnly, Secure và SameSite
+                            </li>
+                            <li style="margin-bottom: 12px;">
+                                <span class="success-icon">✓</span>
+                                <strong>Xác Thực Đầu Vào:</strong> Xác thực và vệ sinh tất cả đầu vào trên máy chủ
+                            </li>
+                            <li style="margin-bottom: 12px;">
+                                <span class="success-icon">✓</span>
+                                <strong>Chính Sách Bảo Mật Nội Dung:</strong> Đặt tiêu đề CSP để hạn chế các nguồn tập lệnh
+                            </li>
+                            <li style="margin-bottom: 12px;">
+                                <span class="success-icon">✓</span>
+                                <strong>Chỉ HTTPS:</strong> Luôn sử dụng HTTPS trong sản xuất
+                            </li>
+                            <li style="margin-bottom: 12px;">
+                                <span class="success-icon">✓</span>
+                                <strong>Tiêu Đề Bảo Mật:</strong> Triển khai X-XSS-Protection, X-Content-Type-Options
+                            </li>
+                            <li style="margin-bottom: 12px;">
+                                <span class="success-icon">✓</span>
+                                <strong>Cập Nhật Thường Xuyên:</strong> Giữ cho các phụ thuộc và khung được cập nhật
+                            </li>
+                        </ul>
+                    </div>
+
+                    <h3 style="color: #0984e3; margin-top: 40px; margin-bottom: 20px;">Cách Sử Dụng Các Tập Tin Này:</h3>
+                    <div class="code-box">
+# Chạy phiên bản DỄ BỊ TẤN CÔNG để xem các tấn công:
+npm install
+npm start
+# Truy cập http://localhost:3000
+
+# Chạy phiên bản AN TOÀN để xem các bản vá:
+npm run start-secure
+# Truy cập http://localhost:3000
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(tabName) {
+            const contents = document.querySelectorAll('.demo-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            const tabs = document.querySelectorAll('.demo-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        async function trySQLInjectionOnSecure() {
+            const username = document.getElementById('secure-username').value;
+            const password = document.getElementById('secure-password').value;
+
+            if (!username || !password) {
+                showResult('secure-result', 'Vui lòng nhập tên người dùng và mật khẩu', 'blocked');
+                return;
+            }
+
+            try {
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showResult('secure-result', 
+                        `<span style="color: #666;">Đăng nhập thành công (nếu thông tin xác thực phù hợp)</span>`, 
+                        'success'
+                    );
+                } else {
+                    showResult('secure-result', 
+                        `<h4 style="color: #0984e3;">✅ Tấn Công Được Ngăn Chặn!</h4>
+                         <p>Payload SQL injection được coi là giá trị chuỗi ký tự theo nghĩa đen.</p>
+                         <p>Lỗi: ${data.message}</p>
+                         <p>Vì không có người dùng có tên người dùng = "${username}", đăng nhập không thành công một cách an toàn.</p>
+                         <p>Ngay cả với payload "${username}", truy vấn được tham số hóa coi nó là dữ liệu, không phải mã!</p>`, 
+                        'success'
+                    );
+                }
+            } catch (error) {
+                showResult('secure-result', `Lỗi: ${error.message}`, 'blocked');
+            }
+        }
+
+        function clearSecureResults() {
+            document.getElementById('secure-result').classList.remove('show');
+            document.getElementById('secure-username').value = '';
+            document.getElementById('secure-password').value = '';
+        }
+
+        function setSampleSecureCookie() {
+            // Đặt cookie HttpOnly (trong tình huống thực tế, máy chủ sẽ đặt những cái này)
+            document.cookie = "session_user=admin; path=/; max-age=3600; SameSite=Strict";
+            document.cookie = "session_id=secure123; path=/; max-age=3600; SameSite=Strict";
+
+            const status = document.getElementById('secure-cookie-status');
+            status.innerHTML = `
+                <div style="color: #0984e3; font-weight: bold;">✅ Cookie phiên an toàn được đặt!</div>
+                <div style="background: #e7f5ff; padding: 10px; border-radius: 5px; margin-top: 10px; font-family: monospace; font-size: 12px;">
+                    Lưu Ý: Trong sản xuất, đây sẽ là cookie HttpOnly mà JavaScript không thể truy cập.
+                </div>
+            `;
+        }
+
+        async function tryXSSOnSecure() {
+            const message = document.getElementById('secure-xss-message').value;
+
+            if (!message) {
+                showResult('secure-xss-result', 'Vui lòng nhập tin nhắn', 'blocked');
+                return;
+            }
+
+            try {
+                const response = await fetch('/send-notification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ recipient: 'admin', message: message })
+                });
+
+                const data = await response.json();
+
+                showResult('secure-xss-result',
+                    `<h4 style="color: #0984e3;">✅ XSS Payload Blocked!</h4>
+                     <p>Your payload was safely escaped:</p>
+                     <div style="background: #f4f4f4; padding: 10px; border-radius: 5px; margin-top: 10px; font-family: monospace; font-size: 12px; word-break: break-all;">
+                         Input: ${message}
+                     </div>
+                     <div style="background: #f4f4f4; padding: 10px; border-radius: 5px; margin-top: 10px; font-family: monospace; font-size: 12px; word-break: break-all;">
+                         Escaped: ${escapeHtml(data.html)}
+                     </div>
+                     <p style="margin-top: 15px;">
+                         The HTML special characters were converted to entities (&lt;, &gt;, &quot;), 
+                         preventing the browser from interpreting them as code. The JavaScript will not execute!
+                     </p>`,
+                    'success'
+                );
+            } catch (error) {
+                showResult('secure-xss-result', `Error: ${error.message}`, 'blocked');
+            }
+        }
+
+        function clearSecureXSSResults() {
+            document.getElementById('secure-xss-result').classList.remove('show');
+            document.getElementById('secure-xss-message').value = '';
+        }
+
+        function showResult(elementId, content, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = content;
+            element.classList.add('show');
+            element.className = 'result-box show ' + type;
+        }
+
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        console.log('%c🔒 Secure Bank Demo', 'font-size: 20px; color: #00b894; font-weight: bold;');
+        console.log('%c✅ This version is protected against SQL Injection and XSS!', 'color: #00b894; font-weight: bold; font-size: 14px;');
+
+        // ====== STORED XSS - SECURE FUNCTIONS ======
+        async function submitSecureStoredXSS() {
+            const author = document.getElementById('secure-comment-author').value;
+            const content = document.getElementById('secure-comment-content').value;
+
+            if (!author || !content) {
+                showResult('secure-comments-result', 'Vui lòng nhập tên tác giả và nội dung', 'blocked');
+                return;
+            }
+
+            try {
+                const response = await fetch('/comments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ author, content })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showResult('secure-comments-result', 
+                        `✅ Bình luận đã được lưu an toàn!<br>
+                        Ngay cả khi bạn nhập payload XSS, nó sẽ được thoát HTML.<br>
+                        Nhấp "Tải Danh Sách" để xem payload được hiển thị dưới dạng văn bản, không phải HTML.`, 
+                        'success'
+                    );
+                    document.getElementById('secure-comment-author').value = '';
+                    document.getElementById('secure-comment-content').value = '';
+                } else {
+                    showResult('secure-comments-result', `Lỗi: ${data.error}`, 'blocked');
+                }
+            } catch (error) {
+                showResult('secure-comments-result', `Lỗi: ${error.message}`, 'blocked');
+            }
+        }
+
+        async function loadSecureComments() {
+            try {
+                const response = await fetch('/comments');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+
+                let html = '<div style="background: #d3f9d8; padding: 15px; border-radius: 5px; border: 1px solid #51cf66;">';
+                html += '<h4 style="color: #2f9e44; margin-bottom: 15px;">✅ Danh Sách Bình Luận (Được Thoát HTML):</h4>';
+                
+                if (data.comments && data.comments.length > 0) {
+                    data.comments.forEach(comment => {
+                        html += `<div style="background: white; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; border-radius: 3px;">
+                            <strong>Tác Giả:</strong> ${comment.author}<br>
+                            <strong>Bình Luận:</strong>
+                            <div style="background: #f0f0f0; padding: 10px; margin-top: 5px; border-left: 3px solid #51cf66; word-break: break-all;">
+                                ${comment.content}
+                            </div>
+                        </div>`;
+                    });
+                } else {
+                    html += '<p>Không có bình luận.</p>';
+                }
+
+                html += '</div>';
+                document.getElementById('secure-comments-result').innerHTML = html;
+            } catch (error) {
+                document.getElementById('secure-comments-result').innerHTML = `<p style="color: #d32f2f;">Lỗi: ${error.message}</p>`;
+            }
+        }
+
+        // ====== DOM-BASED XSS - SECURE FUNCTION ======
+        async function triggerSecureDOMXSS() {
+            const userInput = document.getElementById('secure-dom-input').value;
+
+            if (!userInput) {
+                alert('Vui lòng nhập dữ liệu');
+                return;
+            }
+
+            // ĐÃ SỬA: Sử dụng textContent thay vì innerHTML
+            const resultDiv = document.getElementById('secure-dom-result');
+            resultDiv.innerHTML = `
+                <div style="background: #d3f9d8; padding: 15px; border-radius: 5px; border: 1px solid #51cf66;">
+                    <strong style="color: #2f9e44;">✅ Đầu Ra (Sử dụng textContent - AN TOÀN):</strong>
+                    <div style="background: white; padding: 10px; margin-top: 10px; border-radius: 3px;"></div>
+                </div>
+            `;
+
+            // Dùng textContent - chỉ hiển thị text, không parse HTML
+            resultDiv.querySelector('div div').textContent = userInput;
+        }
+    </script>
+</body>
+</html>

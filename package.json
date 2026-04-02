@@ -1,0 +1,15 @@
+{
+  "name": "vulnerable-bank",
+  "version": "1.0.0",
+  "description": "Educational demo: vulnerable and patched bank web app",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "start-secure": "node app-secure.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "sqlite3": "^5.1.6",
+    "body-parser": "^1.20.2"
+  }
+}
